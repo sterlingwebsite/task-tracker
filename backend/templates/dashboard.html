@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Task Dashboard</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    <h1>Welcome, {{ session['username'] }}!</h1>
+
+    <!-- Add Task Form -->
+    <h2>Create a New Task</h2>
+    <form method="POST" action="/dashboard">
+        <input type="text" name="title" placeholder="Task Title" required>
+        <button type="submit">Add Task</button>
+    </form>
+
+{% with messages = get_flashed_messages() %}
+  {% if messages %}
+    <ul style="color: green;">
+      {% for message in messages %}
+        <li>{{ message }}</li>
+      {% endfor %}
+    </ul>
+  {% endif %}
+{% endwith %}
+
+    <!-- Task List -->
+    <h2>Pending Tasks</h2>
+{% if pending %}
+  <ul>
+    {% for task in pending %}
+      <li>
+        {{ task[2] }}
+        <form method="POST" action="/complete/{{ task[0] }}" style="display:inline;">
+          <button type="submit">Mark Complete</button>
+        </form>
+        <form method="POST" action="/edit/{{ task[0] }}" style="display:inline;">
+          <input type="text" name="new_title" placeholder="New title" required>
+          <button type="submit">✏️ Rename</button>
+        </form>
+        <form method="POST" action="/delete/{{ task[0] }}" style="display:inline;">
+          <button type="submit">🗑️ Delete</button>
+        </form>
+      </li>
+    {% endfor %}
+  </ul>
+{% else %}
+  <p>No pending tasks.</p>
+{% endif %}
+
+<h2>Completed Tasks</h2>
+{% if completed %}
+  <ul>
+    {% for task in completed %}
+      <li>
+        {{ task[2] }} <strong>(✓ Completed)</strong>
+        <form method="POST" action="/delete/{{ task[0] }}" style="display:inline;">
+          <button type="submit">🗑️ Delete</button>
+        </form>
+      </li>
+    {% endfor %}
+  </ul>
+{% else %}
+  <p>No completed tasks yet.</p>
+{% endif %}
+
+
+    <!-- Logout -->
+    <br><br>
+    <a href="/logout">Logout</a>
+</body>
+</html>
