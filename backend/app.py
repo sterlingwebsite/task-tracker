@@ -1,4 +1,4 @@
-from flask import Flask, flash
+from flask import Flask, flash, redirect, url_for
 from auth import auth_bp
 from tasks import tasks_bp
 from models import init_db
@@ -15,6 +15,11 @@ init_db()  # Initialize the user table
 # Register Blueprints
 app.register_blueprint(auth_bp)
 app.register_blueprint(tasks_bp)
+
+# Define root route before the app runs
+@app.route('/')
+def index():
+    return redirect(url_for('auth.login'))  # or 'tasks.dashboard'
 
 if __name__ == '__main__':
     port = int(os.environ.get('PORT', 5000))  # use Railway's assigned port
