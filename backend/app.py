@@ -17,4 +17,5 @@ app.register_blueprint(auth_bp)
 app.register_blueprint(tasks_bp)
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    port = int(os.environ.get('PORT', 5000))  # use Railway's assigned port
+    app.run(debug=True, host='0.0.0.0', port=port)
